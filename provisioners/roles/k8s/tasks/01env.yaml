@@ -1,0 +1,98 @@
+- name: create xfs one /dev/sdc
+  filesystem:
+      fstype: xfs
+      dev: /dev/sdc
+
+- name: mount to /data
+  mount:
+      path: /data
+      src: /dev/sdc
+      fstype: xfs
+      state: mounted
+
+- name: create .ssh
+  file:
+      path: /root/.ssh
+      mode: 0700
+      state: directory
+
+- name: setup ssh key for root
+  copy: 
+      src: id_rsa.pub
+      dest: /root/.ssh/authorized_keys
+      mode: 0600
+
+- name: install packages
+  yum:
+      name: epel-release
+
+- name: install packages
+  yum:
+      name: "{{packages}}"
+  vars:
+      packages:
+          - conntrack
+          - ipvsadm
+          - ntp
+          - ipset
+          - jq
+          - iptables
+          - curl
+          - sysstat
+          - libseccomp
+          - wget
+
+- name: disable filewalld
+  systemd:
+      name: firewalld
+      state: stopped
+      enabled: no
+
+      #    - name: disable dnsmasq
+      #      systemd:
+      #          name: dnsmasq
+      #          state: stopped
+      #          enabled: no
+      #
+- name: disable selinux
+  selinux:
+      state: disabled
+
+- name: disable selinux
+  selinux:
+      state: disabled
+
+- name: enable kernel mods
+  modprobe:
+      name: "{{ item }}"
+      state: present
+  with_items:
+    - ip_vs_rr
+    - br_netfilter
+
+
+- name: setup timezone
+  timezone:
+    name: Asia/Shanghai
+
+- name: setup sysctl
+  copy:
+      src: kubernetes.conf.sysctl
+      mode: 0600
+      dest: /etc/sysctl.d/98-kubernetes.conf
+
+- name: dirs 
+  file:
+      path: "{{ item }}"
+      state: directory
+  with_items:
+      - /opt/k8s/bin
+      - /opt/k8s/work
+      - /etc/kubernetes/cert
+      - /etc/etcd/cert
+
+- name: setup env files
+  template:
+      src: environments.sh.j2
+      dest: /opt/k8s/bin/environment.sh
+      mode: 0700
