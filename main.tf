@@ -89,7 +89,7 @@ resource "azurerm_virtual_machine" "k8s" {
 
     ssh_keys = {
       path     = "/home/${var.admin_user}/.ssh/authorized_keys"
-      key_data = "${file("${path.module}/id_rsa.pub")}"
+      key_data = "${file("${path.module}/provisioners/roles/k8s/files/id_rsa.pub")}"
     }
   }
 
@@ -108,7 +108,7 @@ resource "null_resource" "dc" {
     #host = "${azurerm_network_interface.k8s.*.private_ip_address[count.index]}"
     type = "ssh"
     host = "${azurerm_public_ip.bastion.ip_address}"
-    private_key = "${file("${path.module}/id_rsa")}"
+    private_key = "${file("${path.module}/provisioners/roles/k8s/files/id_rsa")}"
     user = "${var.admin_user}"
     #bastion_host = "${azurerm_public_ip.bastion.ip_address}"
     #bastion_user = "${var.admin_user}"
