@@ -1,4 +1,5 @@
 - name: setup k8s
   hosts: all
   roles:
-      - {role: k8s, role_action: "01env" }
+      #      - {role: k8s, role_action: "01env" }
+      - {role: k8s, role_action: "02certs" }

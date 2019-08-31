@@ -99,7 +99,7 @@ resource "azurerm_virtual_machine" "k8s" {
 
 }
 
-resource "null_resource" "dc" {
+resource "null_resource" "b" {
   triggers {
     cluster_instance_ids = "${join(",", azurerm_virtual_machine.k8s.*.id)}"
   }
@@ -188,7 +188,7 @@ resource "azurerm_virtual_machine" "bastion" {
 
     ssh_keys = {
       path     = "/home/${var.admin_user}/.ssh/authorized_keys"
-      key_data = "${file("${path.module}/id_rsa.pub")}"
+      key_data = "${file("${path.module}/provisioners/roles/k8s/files/id_rsa.pub")}"
     }
   }
 

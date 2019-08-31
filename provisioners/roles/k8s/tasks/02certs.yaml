@@ -1,0 +1,49 @@
+- name: install cfssl
+  get_url: 
+    url: https://pkg.cfssl.org/R1.2/cfssl_linux-amd64
+    dest: /usr/bin/cfssl
+    mode: 0700
+  delegate_to: localhost
+  run_once: true
+
+- name: install cfssljson
+  get_url: 
+    url: https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
+    dest: /usr/bin/cfssljson
+    mode: 0700
+  delegate_to: localhost
+  run_once: true
+
+- name: install cfssl-certinfo
+  get_url: 
+    url: https://pkg.cfssl.org/R1.2/cfssl-certinfo_linux-amd64
+    dest: /usr/bin/cfssl-certinfo
+    mode: 0700
+  delegate_to: localhost
+  run_once: true
+
+- name: setup ssl config files
+  run_once: true
+  copy:
+      dest: /tmp/provisioners/
+      src: "{{ item }}"
+  with_items:
+      - ca-config.json
+      - ca-csr.json
+  delegate_to: localhost
+
+- name: generate certs
+  run_once: true
+  delegate_to: localhost
+  shell: cfssl gencert -initca ca-csr.json | cfssljson -bare ca
+  args:
+      creates: ca-key.pem
+
+- name: sync file to nodes
+  copy:
+      src: "{{ item }}"
+      dest: /etc/kubernetes/cert/
+  with_items:
+      - ca.pem
+      - ca-key.pem
+      - ca-config.json
