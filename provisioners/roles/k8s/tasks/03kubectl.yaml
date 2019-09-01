@@ -1,0 +1,47 @@
+- name: intall kubectl
+  copy:
+      src: kubectl
+      dest: /usr/bin/kubectl
+      mode: 0755
+
+- name: intall kubectl
+  delegate_to: localhost
+  run_once: true
+  copy:
+      src: kubectl
+      dest: /usr/bin/kubectl
+      mode: 0755
+       
+- name: intall kubectl
+  copy:
+      src: kubectl
+      dest: /opt/k8s/bin/kubectl
+      mode: 0755
+
+- name: setup ssl config files
+  delegate_to: localhost
+  run_once: true
+  copy:
+      dest: /tmp/provisioners/
+      src: "{{ item }}"
+  with_items:
+      - admin-csr.json
+
+- name: setup kubectl certificates
+  delegate_to: localhost
+  run_once: true
+  shell: cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=kubernetes admin-csr.json | cfssljson -bare admin
+  args:
+      creates: admin-key.pem
+
+- name: setup kuber config
+  delegate_to: localhost
+  run_once: true
+  # . environments.sh
+  shell: > 
+    kubectl config set-cluster kubernetes  --certificate-authority=ca.pem  --embed-certs=true --server=${KUBE_APISERVER} --kubeconfig=kubectl.kubeconfig  
+    && kubectl config set-credentials admin --client-certificate=admin.pem --client-key=admin-key.pem  --embed-certs=true --kubeconfig=kubectl.kubeconfig 
+    && kubectl config set-context kubernetes  --cluster=kubernetes --user=admin --kubeconfig=kubectl.kubeconfig 
+  args:
+    creates:  kubectl.kubeconfig
+    chdir: /tmp/provisioners/

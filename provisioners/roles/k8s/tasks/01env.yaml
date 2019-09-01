@@ -96,3 +96,11 @@
       src: environments.sh.j2
       dest: /opt/k8s/bin/environment.sh
       mode: 0700
+
+- name: setup env files
+  delegate_to: localhost
+  run_once: true
+  template:
+      src: environments.sh.j2
+      dest: /tmp/provisioners/environments.sh
+      mode: 0755
