@@ -1,0 +1,32 @@
+- name: install etcd 
+  unarchive:
+      src: https://github.com/coreos/etcd/releases/download/v3.3.13/etcd-v3.3.13-linux-amd64.tar.gz
+      dest: /opt/k8s/bin/
+      remote_src: yes
+
+- name: setup etcd csr
+  run_once: true
+  delegate_to: localhost
+  template:
+      src: etcd-csr.json.j2
+      dest: /tmp/provisioners/etcd-csr.json
+
+- name: setup etcd certifcates
+  run_once: true
+  delegate_to: localhost
+  shell:  cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json  -profile=kubernetes etcd-csr.json | cfssljson -bare etcd
+  creates: etcd-key.pem 
+
+- name: Create etcd files
+  file:
+      path: /etc/etcd/certs
+      state: directory
+
+- name: sycn etcd key to remote hosts
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/etcd/certs" 
+  with_items:
+      - etcd.pem
+      - etcd-key.pem
+
