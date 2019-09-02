@@ -99,7 +99,7 @@ resource "azurerm_virtual_machine" "k8s" {
 
 }
 
-resource "null_resource" "abc" {
+resource "null_resource" "ac" {
   triggers {
     cluster_instance_ids = "${join(",", azurerm_virtual_machine.k8s.*.id)}"
   }
@@ -112,7 +112,7 @@ resource "null_resource" "abc" {
     user = "${var.admin_user}"
     #bastion_host = "${azurerm_public_ip.bastion.ip_address}"
     #bastion_user = "${var.admin_user}"
-    #bastion_private_key = "${file("${path.module}/id_rsa")}"
+    #bastion_private_key = "${file("${path.module}/id_rsa")}" }
   }
   provisioner "file" {
     source = "./provisioners"
@@ -120,7 +120,7 @@ resource "null_resource" "abc" {
   }
   provisioner "remote-exec" {
     inline = [
-        "sudo bash /tmp/provisioners/init.sh ${join(" ", azurerm_network_interface.k8s.*.private_ip_address)}"
+        "sudo bash /tmp/provisioners/init.sh ${join(" ", azurerm_network_interface.k8s.*.private_ip_address)} ${var.admin_user}"
       ]
   }
 }
