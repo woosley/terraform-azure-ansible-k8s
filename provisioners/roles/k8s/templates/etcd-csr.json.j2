@@ -2,9 +2,9 @@
   "CN": "etcd",
   "hosts": [
     "127.0.0.1",
-    "{{ group[all][0] }}",
-    "{{ group[all][1] }}",
-    "{{ group[all][2] }}"
+    "{{ groups["all"][0] }}",
+    "{{ groups["all"][1] }}",
+    "{{ groups["all"][2] }}"
   ],
   "key": {
     "algo": "rsa",

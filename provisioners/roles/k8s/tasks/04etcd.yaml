@@ -1,8 +1,19 @@
 - name: install etcd 
+  run_once: true
+  delegate_to: localhost
   unarchive:
       src: https://github.com/coreos/etcd/releases/download/v3.3.13/etcd-v3.3.13-linux-amd64.tar.gz
-      dest: /opt/k8s/bin/
+      dest: /tmp/provisioners
       remote_src: yes
+      creates: /tmp/provisioners/etcd-v3.3.13-linux-amd64
+
+- name: install etcd to remote hosts
+  copy:
+      src: etcd-v3.3.13-linux-amd64/{{ item }}
+      dest: /opt/k8s/bin/{{ item }}
+  with_items:
+      - etcd
+      - etcdctl 
 
 - name: setup etcd csr
   run_once: true
@@ -25,8 +36,18 @@
 - name: sycn etcd key to remote hosts
   copy:
     src: "{{ item }}"
-    dest: "/etc/etcd/certs" 
+    dest: /etc/etcd/certs/{{ item }}
   with_items:
       - etcd.pem
       - etcd-key.pem
 
+- name: setup etcd systemctl file
+  template: 
+    src: etcd.service.j2
+    dest: /etc/systemd/system/etcd.service
+
+- name: enabled and start etcd
+  systemd:
+      name: etcd
+      enabled: yes
+      state: started
