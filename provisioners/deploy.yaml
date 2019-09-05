@@ -4,5 +4,5 @@
       #- {role: k8s, role_action: "01env" }
       #- {role: k8s, role_action: "02certs" }
       #- {role: k8s, role_action: "03kubectl" }
-      #- {role: k8s, role_action: "04etcd" }
-      - {role: k8s, role_action: "05flannel" }
+      - {role: k8s, role_action: "04etcd" }
+      #- {role: k8s, role_action: "05flannel" }

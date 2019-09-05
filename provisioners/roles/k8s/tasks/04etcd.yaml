@@ -11,6 +11,7 @@
   copy:
       src: etcd-v3.3.13-linux-amd64/{{ item }}
       dest: /opt/k8s/bin/{{ item }}
+      mode: 0755
   with_items:
       - etcd
       - etcdctl 
@@ -26,12 +27,17 @@
   run_once: true
   delegate_to: localhost
   shell:  cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json  -profile=kubernetes etcd-csr.json | cfssljson -bare etcd
-  creates: etcd-key.pem 
+  args:
+    creates: etcd-key.pem 
 
 - name: Create etcd files
   file:
-      path: /etc/etcd/certs
+      path: "{{item}}"
       state: directory
+  with_items:
+      - /etc/etcd/certs/
+      - /data/k8s/etcd/data
+      - /data/k8s/etcd/wal
 
 - name: sycn etcd key to remote hosts
   copy:
