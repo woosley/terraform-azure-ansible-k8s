@@ -23,33 +23,33 @@
   args:
     creates: flanneld-key.pem
 
-- name: import information to etcd
-  run_once: true
-  delegate_to: group["all"][0]
-  shell: >
-    etcdctl 
-    --endpoints=${ETCD_ENDPOINTS} 
-    --ca-file=/opt/k8s/work/ca.pem
-    --cert-file=/etc/flannel/certs/flanneld.pem 
-    --key-file=/etc/flannel/certs/flanneld-key.pem 
-    mk {{ FLANNEL_ETCD_PREFIX }}/config '{"Network":"'{{CLUSTER_CIDR}}'", "SubnetLen": 21, "Backend": {"Type": "vxlan"}}'
-    && touch /etc/flannel/mark
-  args:
-      creates: /etc/flannel/mark
- 
 - name: create flanneld folder
   file:
       state: directory
-      path: /etc/flanneld/certs
+      path: /etc/flannel/certs
 
 - name: copy certs
   copy:
       src: "{{ item }}"
-      dest: /etc/flanneld/certs/{{ item }}
+      dest: /etc/flannel/certs/{{ item }}
   with_items: 
     - flanneld.pem
     - flanneld-key.pem
 
+- name: import information to etcd
+  run_once: true
+  delegate_to: "{{ groups['all'][0] }}"
+  shell: >
+    /opt/k8s/bin/etcdctl 
+    --endpoints=${ETCD_ENDPOINTS} 
+    --ca-file=/etc/kubernetes/cert/ca.pem
+    --cert-file=/etc/flannel/certs/flanneld.pem 
+    --key-file=/etc/flannel/certs/flanneld-key.pem 
+    mk {{ FLANNEL_ETCD_PREFIX }}/config '{"Network":"'{{ CLUSTER_CIDR }}'", "SubnetLen": 21, "Backend": {"Type": "vxlan"}}'
+    && touch /etc/flannel/mark
+  args:
+      creates: /etc/flannel/mark
+ 
 - name: creates systemctl service file
   template:
     src: flanneld.service.j2
@@ -60,3 +60,4 @@
       name: flanneld
       enabled: yes
       state: started
+      daemon_reload: yes
