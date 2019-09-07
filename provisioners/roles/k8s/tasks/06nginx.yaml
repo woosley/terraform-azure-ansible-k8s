@@ -1,0 +1,34 @@
+- name: create folders for nginx
+  file:
+      dest: /opt/k8s/kube-nginx/{{item}}
+      state: directory
+  with_items:
+      - conf
+      - logs
+      - sbin
+
+- name: install nginx on remote hosts
+  copy:
+      src: nginx
+      dest: /opt/k8s/kube-nginx/sbin/kube-nginx
+      mode: 0755
+      owner: root
+
+- name: setup configuration file
+  template:
+    src: kube-nginx.conf.j2
+    dest: /opt/k8s/kube-nginx/conf/kube-nginx.conf
+    mode: 0644
+
+- name: setup nginx service file
+  template:
+      src: kube-nginx.service.j2
+      dest: /etc/systemd/system/kube-nginx.service
+      mode: 0644
+
+- name: setup nginx service
+  systemd:
+      name: kube-nginx
+      enabled: yes
+      state: started
+      daemon_reload: yes
