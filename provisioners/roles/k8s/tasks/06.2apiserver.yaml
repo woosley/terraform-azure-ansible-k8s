@@ -1,19 +1,26 @@
 - name: setup csr file
-  delegated_to: localhost
+  delegate_to: localhost
   run_once: true
   template:
       src: kubernetes-csr.json.j2
       dest: /tmp/provisioners/kubernetes-csr.json
 
 - name: create certs for apiserver
-  delegated_to: localhost
+  delegate_to: localhost
   run_once: true
   shell: cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=kubernetes kubernetes-csr.json | cfssljson -bare kubernetes
   args:
       creates: kubernetes-key.pem
 
+- name: setup csr for metrics server
+  run_once: true
+  delegate_to: localhost
+  template: 
+    src: proxy-client-csr.json.j2
+    dest: /tmp/provisioners/proxy-client-csr.json
+
 - name: create certs for apiserver
-  delegated_to: localhost
+  delegate_to: localhost
   run_once: true
   shell: cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=kubernetes proxy-client-csr.json | cfssljson -bare proxy-client
   args:
@@ -31,17 +38,11 @@
 
 - name: copy configuration files to server
   template:
-      src: {{ item }}.j2
+      src: "{{ item }}.j2"
       dest: /etc/kubernetes/{{item}}
   with_items:
       - audit-policy.yaml
       - encryption-config.yaml
-
-- name: setup csr for metrics server
-  template: 
-    src: proxy-client-csr.json.j2
-    dest: /tmp/provisioners/proxy-client-csr.json
-
 
 - name: setup apiserver systemd service file
   template: 
