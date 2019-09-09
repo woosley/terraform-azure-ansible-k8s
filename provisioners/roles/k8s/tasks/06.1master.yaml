@@ -1,0 +1,25 @@
+- name: download kubernets from internet
+  run_once: true
+  delegate_to: localhost
+  unarchive:
+      src: "{{ K8S_DOWNLOAD_URL }}"
+      dest: /tmp/provisioners
+      remote_src: yes
+      creates: /tmp/provisioners/kubernetes/server/bin/kube-apiserver
+
+- name: copy files to remote server
+  copy:
+      src: /tmp/provisioners/kubernetes/server/bin/{{ item }}
+      dest: /opt/k8s/bin/{{ item }}
+      mode: 0755
+  with_items:
+      - apiextensions-apiserver
+      - cloud-controller-manager
+      - kube-apiserver
+      - kube-controller-manager
+      - kube-proxy
+      - kube-scheduler
+      - kubeadm
+      - kubectl
+      - kubelet
+      - mounter

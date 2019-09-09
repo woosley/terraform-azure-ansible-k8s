@@ -6,4 +6,5 @@
       #- {role: k8s, role_action: "03kubectl" }
       #- {role: k8s, role_action: "04etcd" }
       #- {role: k8s, role_action: "05flannel" }
-      - {role: k8s, role_action: "06nginx" }
+      #- {role: k8s, role_action: "06nginx" }
+      - {role: k8s, role_action: "06.1master" }
