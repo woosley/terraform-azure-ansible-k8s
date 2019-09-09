@@ -54,7 +54,7 @@ ExecStart=/opt/k8s/bin/kube-apiserver \
   --kubelet-timeout=10s \
   --proxy-client-cert-file=/etc/kubernetes/cert/proxy-client.pem \
   --proxy-client-key-file=/etc/kubernetes/cert/proxy-client-key.pem \
-  --service-cluster-ip-range= {{ SERVICE_CIDR }} \
+  --service-cluster-ip-range={{ SERVICE_CIDR }} \
   --service-node-port-range={{ NODE_PORT_RANGE }} \
   --logtostderr=true \
   --v=2
@@ -65,4 +65,3 @@ LimitNOFILE=65536
 
 [Install]
 WantedBy=multi-user.target
-EOF

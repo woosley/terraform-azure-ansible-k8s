@@ -10,7 +10,7 @@ ENCRYPTION_KEY: "vnDSeuy66Et7nTKLksKw8L6NTAuM63a1OgjcWxoJbvA="
 # export NODE_NAMES=(k8s-1 k8s-2 k8s-0)
 # 
 # # etcd 集群服务地址列表
-# export ETCD_ENDPOINTS="https://{{ groups["all"][0] }}:2379,https://{{ groups["all"][1] }}:2379,https://{{ groups["all"][2] }}:2379"
+ETCD_ENDPOINTS: https://{{ groups["all"][0] }}:2379,https://{{ groups["all"][1] }}:2379,https://{{ groups["all"][2] }}:2379
 # 
 # # etcd 集群间通信的 IP 和端口
 # export ETCD_NODES="k8s-0=https://{{ groups["all"][0] }}:2380,k8s-1=https://{{ groups["all"][1] }}:2380,k8s-2=https://{{ groups["all"][2] }}:2380"
