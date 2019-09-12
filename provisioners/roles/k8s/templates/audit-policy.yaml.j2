@@ -1,4 +1,5 @@
-nd: Policy
+apiVersion: audit.k8s.io/v1beta1
+kind: Policy
 rules:
   # The following requests were manually identified as high-volume and low-risk, so drop them.
   - level: None

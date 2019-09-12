@@ -46,3 +46,14 @@
     creates:  kubectl.kubeconfig
     chdir: /tmp/provisioners/
     executable: /bin/bash
+
+- name: setup kube config directory
+  file:
+      path: /root/.kube/
+      state: directory
+      
+- name: setup kubeconfig file
+  copy:
+      src: kubectl.kubeconfig
+      dest: /root/.kube/config
+      mode: 0644
