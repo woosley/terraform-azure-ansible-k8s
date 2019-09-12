@@ -95,7 +95,7 @@ resource "azurerm_virtual_machine" "k8s" {
 
   tags {
     environment = "staging"
-    Auto_Shutdown = "no"
+    #Auto_Shutdown = "no"
   }
 
 }
@@ -195,6 +195,6 @@ resource "azurerm_virtual_machine" "bastion" {
 
   tags {
     environment = "staging"
-    Auto_Shutdown = "no"
+    #Auto_Shutdown = "no"
   }
 }
