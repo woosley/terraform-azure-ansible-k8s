@@ -5,7 +5,7 @@
     src: https://github.com/coreos/flannel/releases/download/v0.11.0/flannel-v0.11.0-linux-amd64.tar.gz
     dest: /tmp/provisioners/
     remote_src: yes
-    creates: flannel-v0.11.0-linux-amd64.tar.gz
+    creates: flanneld
 
 - name: install flannel 
   copy:
