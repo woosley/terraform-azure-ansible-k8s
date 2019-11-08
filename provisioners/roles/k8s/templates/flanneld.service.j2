@@ -8,7 +8,7 @@ Before=docker.service
 
 [Service]
 Type=notify
-ExecStart=/opt/k8s/bin/flanneld  -etcd-cafile=/etc/kubernetes/cert/ca.pem  -etcd-certfile=/etc/flanneld/certs/flanneld.pem  -etcd-keyfile=/etc/flanneld/certs/flanneld-key.pem  -etcd-endpoints=https://{{ groups["all"][0] }}:2379,https://{{ groups["all"][1] }}:2379,https://{{ groups["all"][2] }}:2379  -etcd-prefix={{ FLANNEL_ETCD_PREFIX }}  -iface={{IFACE}}  -ip-masq
+ExecStart=/opt/k8s/bin/flanneld  -etcd-cafile=/etc/kubernetes/cert/ca.pem  -etcd-certfile=/etc/flannel/certs/flanneld.pem  -etcd-keyfile=/etc/flannel/certs/flanneld-key.pem  -etcd-endpoints=https://{{ groups["all"][0] }}:2379,https://{{ groups["all"][1] }}:2379,https://{{ groups["all"][2] }}:2379  -etcd-prefix={{ FLANNEL_ETCD_PREFIX }}  -iface={{IFACE}}  -ip-masq
 ExecStartPost=/opt/k8s/bin/mk-docker-opts.sh -k DOCKER_NETWORK_OPTIONS -d /run/flannel/docker
 Restart=always
 RestartSec=5

@@ -1,4 +1,4 @@
-K8S_DOWNLOAD_URL: https://woosley.blob.core.chinacloudapi.cn/kubernetes/kubernetes-server-linux-amd64.tar.gz
+K8S_DOWNLOAD_URL: https://woosley.blob.core.chinacloudapi.cn/woosley/kubernetes-server-linux-amd64.tar.gz
 
 # # 生成 EncryptionConfig 所需的加密 key
 ENCRYPTION_KEY: "vnDSeuy66Et7nTKLksKw8L6NTAuM63a1OgjcWxoJbvA="

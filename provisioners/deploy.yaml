@@ -1,11 +1,11 @@
 - name: setup k8s
   hosts: all
   roles:
-      - {role: k8s, role_action: "01env" }
+      #- {role: k8s, role_action: "01env" }
       #- {role: k8s, role_action: "02certs" }
       #- {role: k8s, role_action: "03kubectl" }
       #- {role: k8s, role_action: "04etcd" }
-      #- {role: k8s, role_action: "05flannel" }
-      #- {role: k8s, role_action: "06nginx" }
-      #- {role: k8s, role_action: "06.1master" }
-      #- {role: k8s, role_action: "06.2apiserver" }
+      - {role: k8s, role_action: "05flannel" }
+      - {role: k8s, role_action: "06nginx" }
+      - {role: k8s, role_action: "06.1master" }
+      - {role: k8s, role_action: "06.2apiserver" }
