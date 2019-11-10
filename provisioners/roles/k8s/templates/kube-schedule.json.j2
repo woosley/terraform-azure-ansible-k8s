@@ -1,5 +1,5 @@
 {
-  "CN": "system:kube-controller-manager",
+  "CN": "system:kube-scheduler",
   "hosts": [
     {% for host in groups["all"] %}
     "{{ host }}",
@@ -15,7 +15,7 @@
       "C": "CN",
       "ST": "GuangZhou",
       "L": "GuangZhou",
-      "O": "system:kube-controller-manager",
+      "O": "system:kube-scheduler",
       "OU": "4Paradigm"
     }
   ]

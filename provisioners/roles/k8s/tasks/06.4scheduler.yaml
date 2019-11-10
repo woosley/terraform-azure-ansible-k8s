@@ -1,0 +1,56 @@
+- name: setup csr file for controler manager
+  delegate_to: localhost
+  run_once: true
+  template:
+      src:  scheduler.json.j2
+      dest: /tmp/provisioners/scheduler-csr.json
+
+- name: create certs for scheduler
+  delegate_to: localhost
+  run_once: true
+  shell: cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=kubernetes scheduler-csr.json | cfssljson -bare kube-scheduler
+  args:
+      creates: kube-scheduler-key.pem
+
+- name: copy certs to server
+  copy:
+      src: "{{ item }}"
+      dest: /etc/kubernetes/cert/{{item}}
+  with_items:
+      - kube-scheduler.pem
+      - kube-scheduler-key.pem
+
+- name: setup kuber config
+  delegate_to: localhost
+  run_once: true
+  shell: > 
+    kubectl config set-cluster kubernetes  --certificate-authority=ca.pem  --embed-certs=true --server={{ KUBE_APISERVER }} --kubeconfig=kube-scheduler.kubeconfig  
+    && kubectl config set-credentials system:kube-scheduler --client-certificate=kube-scheduler.pem --client-key=kube-scheduler-key.pem  --embed-certs=true --kubeconfig=kube-scheduler.kubeconfig 
+    && kubectl config set-context system:kube-scheduler --cluster=kubernetes --user=system:kube-scheduler --kubeconfig=kube-scheduler.kubeconfig 
+    && kubectl config use-context system:kube-scheduler --kubeconfig=kube-scheduler.kubeconfig 
+  args:
+    creates:  kube-scheduler.kubeconfig
+    chdir: /tmp/provisioners/
+    executable: /bin/bash
+
+- name: copy file to master nodes
+  copy: 
+    src: kube-scheduler.kubeconfig
+    dest: /etc/kubernetes/
+
+
+- name: setup scheduler systemd unit file
+  template:
+    src: kube-scheduler.service.j2
+    dest: /etc/systemd/system/kube-scheduler.service
+- name: create workdir for control manager
+  file:
+    path: /data/k8s/k8s/kube-scheduler
+    state: directory
+
+- name: enable and start kube-scheduler          
+  systemd:
+      name: kube-scheduler
+      enabled: yes
+      state: started
+      daemon_reload: yes

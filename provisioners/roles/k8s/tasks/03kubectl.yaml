@@ -34,20 +34,24 @@
   args:
       creates: admin-key.pem
 
+- name: ensure k8s dir is there
+  file: 
+    path: "{{K8S_DIR}}/work"
+    state: directory
+
 - name: sync admin key
   copy: 
     src: "{{ item }}"
     dest: "{{K8S_DIR}}/work/{{item}}"
   with_items:
-      admin-key.pem
-      admin.pem
+      - admin-key.pem
+      - admin.pem
 
 - name: setup kuber config
   delegate_to: localhost
   run_once: true
   shell: > 
-    source environments.sh
-    && kubectl config set-cluster kubernetes  --certificate-authority=ca.pem  --embed-certs=true --server=${KUBE_APISERVER} --kubeconfig=kubectl.kubeconfig  
+    kubectl config set-cluster kubernetes  --certificate-authority=ca.pem  --embed-certs=true --server={{KUBE_APISERVER}} --kubeconfig=kubectl.kubeconfig  
     && kubectl config set-credentials admin --client-certificate=admin.pem --client-key=admin-key.pem  --embed-certs=true --kubeconfig=kubectl.kubeconfig 
     && kubectl config set-context kubernetes  --cluster=kubernetes --user=admin --kubeconfig=kubectl.kubeconfig 
     && kubectl config use-context kubernetes --kubeconfig=kubectl.kubeconfig
