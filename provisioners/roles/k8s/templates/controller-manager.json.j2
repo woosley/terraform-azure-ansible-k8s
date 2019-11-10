@@ -1,0 +1,28 @@
+{
+  "CN": "system:kube-controller-manager",
+  "hosts": [
+    "127.0.0.1",
+    {% for host in groups["all"] %}
+    "{{ host }}",
+    {% endfor %}
+    "{{ CLUSTER_KUBERNETES_SVC_IP }}",
+    "kubernetes",
+    "kubernetes.default",
+    "kubernetes.default.svc",
+    "kubernetes.default.svc.cluster",
+    "kubernetes.default.svc.cluster.local."
+  ],
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "C": "CN",
+      "ST": "GuangZhou",
+      "L": "GuangZhou",
+      "O": "system:kube-controller-manager",
+      "OU": "4Paradigm"
+    }
+  ]
+}

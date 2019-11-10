@@ -49,6 +49,11 @@
     src: kube-apiserver.service.j2
     dest: /etc/systemd/system/kube-apiserver.service
 
+- name: create apiserver directory
+  file:
+    path: {{ K8S_DIR}}/apiserver
+    state: directory
+
 - name: enabled and start apiserver
   systemd:
       name: kube-apiserver

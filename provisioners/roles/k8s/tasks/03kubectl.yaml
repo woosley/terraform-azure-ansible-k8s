@@ -34,6 +34,14 @@
   args:
       creates: admin-key.pem
 
+- name: sync admin key
+  copy: 
+    src: "{{ item }}"
+    dest: "{{K8S_DIR}}/work/{{item}}"
+  with_items:
+      admin-key.pem
+      admin.pem
+
 - name: setup kuber config
   delegate_to: localhost
   run_once: true
@@ -42,6 +50,7 @@
     && kubectl config set-cluster kubernetes  --certificate-authority=ca.pem  --embed-certs=true --server=${KUBE_APISERVER} --kubeconfig=kubectl.kubeconfig  
     && kubectl config set-credentials admin --client-certificate=admin.pem --client-key=admin-key.pem  --embed-certs=true --kubeconfig=kubectl.kubeconfig 
     && kubectl config set-context kubernetes  --cluster=kubernetes --user=admin --kubeconfig=kubectl.kubeconfig 
+    && kubectl config use-context kubernetes --kubeconfig=kubectl.kubeconfig
   args:
     creates:  kubectl.kubeconfig
     chdir: /tmp/provisioners/
