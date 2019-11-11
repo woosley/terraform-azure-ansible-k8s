@@ -1,0 +1,52 @@
+- name: download docker
+  run_once: true
+  delegate_to: localhost
+  unarchive: 
+    src: https://download.docker.com/linux/static/stable/x86_64/docker-18.09.6.tgz
+    dest: /tmp/provisioners
+    remote_src: true
+    creates: /tmp/provisioners/docker
+
+- name: install docker files
+  copy:
+      src: "docker/{{item}}"
+      dest: "/opt/k8s/bin/"
+      mode: 0755
+  with_items:
+    - docker
+    - dockerd
+    - containerd
+    - containerd-shim
+    - docker-init
+    - docker-proxy
+    - runc
+
+- name: create docker run foldler
+  file:
+      path: "{{DOCKER_DIR}}/{{item}}"
+      state: directory
+  with_items:
+      - data
+      - exec
+
+- name: install docker service file
+  template:
+      src: docker.service.j2
+      dest: /etc/systemd/system/docker.service
+
+- name: create docker run foldler
+  file:
+      path:  /etc/docker
+      state: directory
+
+- name: use own registry 
+  template:
+      src: docker-daemon.json.j2
+      dest: /etc/docker/daemon.json
+
+- name: enabled and start docker
+  systemd:
+      name: docker
+      enabled: yes
+      state: started
+      daemon_reload: yes

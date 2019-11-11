@@ -2,7 +2,7 @@
   delegate_to: localhost
   run_once: true
   template:
-      src:  scheduler.json.j2
+      src:  kube-scheduler.json.j2
       dest: /tmp/provisioners/scheduler-csr.json
 
 - name: create certs for scheduler
@@ -30,19 +30,21 @@
     && kubectl config use-context system:kube-scheduler --kubeconfig=kube-scheduler.kubeconfig 
   args:
     creates:  kube-scheduler.kubeconfig
-    chdir: /tmp/provisioners/
-    executable: /bin/bash
-
 - name: copy file to master nodes
   copy: 
     src: kube-scheduler.kubeconfig
     dest: /etc/kubernetes/
 
+- name: setup kube scheduler configuration file
+  template: 
+    src: kube-scheduler.yaml.j2
+    dest: /etc/kubernetes/kube-scheduler.yaml
 
 - name: setup scheduler systemd unit file
   template:
     src: kube-scheduler.service.j2
     dest: /etc/systemd/system/kube-scheduler.service
+
 - name: create workdir for control manager
   file:
     path: /data/k8s/k8s/kube-scheduler

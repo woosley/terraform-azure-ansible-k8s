@@ -100,7 +100,7 @@ resource "azurerm_virtual_machine" "k8s" {
 
 }
 
-resource "null_resource" "aec" {
+resource "null_resource" "abec" {
   triggers {
     cluster_instance_ids = "${join(",", azurerm_virtual_machine.k8s.*.id)}"
   }

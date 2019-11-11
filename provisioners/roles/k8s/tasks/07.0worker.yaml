@@ -1,0 +1,19 @@
+- name: install packages
+  yum:
+      name: epel-release
+
+- name: install packages
+  yum:
+      name: "{{ item }}"
+  with_items:
+  	- conntrack
+    - ipvsadm
+    - ntp
+    - ipset
+    - jq
+    - iptables
+    - curl
+    - sysstat
+    - libseccomp
+    - wget
+
