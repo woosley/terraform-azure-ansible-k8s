@@ -11,4 +11,5 @@
       #- {role: k8s, role_action: "06.2apiserver" }
       #- {role: k8s, role_action: "06.3controller-manager" }
       #- {role: k8s, role_action: "06.4scheduler" }
-      - {role: k8s, role_action: "07.1docker" }
+      #- {role: k8s, role_action: "07.1docker" }
+      - {role: k8s, role_action: "07.2kubelet" }
