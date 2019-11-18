@@ -5,3 +5,4 @@ variable "admin_user" {
 variable "remote-folder" {
   default = "/tmp/provisioners"
 }
+
