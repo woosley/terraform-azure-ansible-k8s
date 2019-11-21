@@ -5,7 +5,8 @@
       && kubectl config set-credentials kubelet-bootstrap  --token=${BOOTSTRAP_TOKEN} --kubeconfig=/etc/kubernetes/kubelet-bootstrap.kubeconfig \
       && kubectl config set-context default --cluster=kubernetes --user=kubelet-bootstrap --kubeconfig=/etc/kubernetes/kubelet-bootstrap.kubeconfig \ 
       && kubectl config use-context default --kubeconfig=/etc/kubernetes/kubelet-bootstrap.kubeconfig
-  creates: "/etc/kubernetes/kubelet-bootstrap.kubeconfig"
+  args:
+    creates: /etc/kubernetes/kubelet-bootstrap.kubeconfig
 
 - name: setup kubelet configuration file
   template:
@@ -17,7 +18,7 @@
       state: directory
       path: "{{ item }}"
   with_items:
-      - /opt/k8s/k8s/kubelet/kubelet-plugins/volume/exec/
+      - /data/k8s/k8s/kubelet/kubelet-plugins/volume/exec/
 
 - name: setup kubelet systemd service file
   template: 
@@ -25,7 +26,9 @@
     dest: /etc/systemd/system/kubelet.service
 
 - name: setup boostrap auth token permission
+  run_once: true
   shell: kubectl create clusterrolebinding kubelet-bootstrap --clusterrole=system:node-bootstrapper --group=system:bootstrappers
+  ignore_errors: yes 
 
 - name: enabled and start kubelet
   systemd:
@@ -33,3 +36,18 @@
       enabled: yes
       state: started
       daemon_reload: yes
+
+- name: create csr.yaml
+  delegate_to: "{{groups['all'][0]}}"
+  run_once: true
+  copy:
+      src: csr-crb.yaml
+      dest: "{{K8S_DIR}}/csr-crb.yaml"
+
+- name: create approval rules
+  delegate_to: "{{groups['all'][0]}}"
+  run_once: true
+  shell: kubectl apply -f {{K8S_DIR}}/csr-crb.yaml && touch {{K8S_DIR}}/csr-crb-applied
+  args:
+    creates: "{{K8S_DIR}}/csr-crb-applied"
+
