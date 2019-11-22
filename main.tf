@@ -99,7 +99,7 @@ resource "azurerm_virtual_machine" "k8s" {
   #Auto_Shutdown = "no"
 }
 
-resource "null_resource" "aabec" {
+resource "null_resource" "abec" {
   triggers = {
     cluster_instance_ids = join(",", azurerm_virtual_machine.k8s.*.id)
   }
