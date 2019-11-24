@@ -51,7 +51,7 @@
 
 - name: create apiserver directory
   file:
-    path: "{{ K8S_DIR}}/apiserver"
+    path: "{{ K8S_DIR}}/kube-apiserver"
     state: directory
 
 - name: enabled and start apiserver

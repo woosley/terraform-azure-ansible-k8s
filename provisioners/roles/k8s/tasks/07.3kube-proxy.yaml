@@ -31,12 +31,17 @@
 - name: setup kube proxy configuration file
   template:
       src: kube-proxy-config.yaml.j2
-      dest: /etc/kube-proxy-config.yaml
+      dest: /etc/kubernetes/kube-proxy-config.yaml
 
 - name: setup kube-proxy systemd file
   template:
       src: kube-proxy.service.j2
-      dest: /etc/systemd/system/kube-proxy.sevice
+      dest: /etc/systemd/system/kube-proxy.service
+
+- name: setup kube proxy working directory
+  file:
+      path: "{{ K8S_DIR }}/kube-proxy"
+      state: directory
 
 - name: enabled and start kube-proxy
   systemd:
