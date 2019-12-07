@@ -1,0 +1,12 @@
+- name: create coredns config
+  delegate_to: "{{groups['all'][0]}}"
+  run_once: true
+  template:
+      src: coredns.yaml.j2
+      dest: /etc/kubernetes/coredns.yaml
+
+- name: create coredns
+  delegate_to: "{{groups['all'][0]}}"
+  run_once: true
+  shell: kubectl create -f /etc/kubernetes/coredns.yaml
+

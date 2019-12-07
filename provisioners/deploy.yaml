@@ -13,4 +13,5 @@
       #j - {role: k8s, role_action: "06.4scheduler" }
       #j - {role: k8s, role_action: "07.1docker" }
       #j - {role: k8s, role_action: "07.2kubelet" }
-      - {role: k8s, role_action: "07.3kube-proxy" }
+      #- {role: k8s, role_action: "07.3kube-proxy" }
+      - {role: k8s, role_action: "09.1coredns" }
