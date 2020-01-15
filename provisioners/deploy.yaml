@@ -1,17 +1,17 @@
 - name: setup k8s
   hosts: all
   roles:
-      #j - {role: k8s, role_action: "01env" }
-      #j - {role: k8s, role_action: "02certs" }
-      #j - {role: k8s, role_action: "03kubectl" }
-      #j - {role: k8s, role_action: "04etcd" }
-      #j - {role: k8s, role_action: "05flannel" }
-      #j - {role: k8s, role_action: "06nginx" }
-      #j - {role: k8s, role_action: "06.1master" }
-      #j - {role: k8s, role_action: "06.2apiserver" }
-      #j - {role: k8s, role_action: "06.3controller-manager" }
-      #j - {role: k8s, role_action: "06.4scheduler" }
-      #j - {role: k8s, role_action: "07.1docker" }
-      #j - {role: k8s, role_action: "07.2kubelet" }
-      #- {role: k8s, role_action: "07.3kube-proxy" }
+      - {role: k8s, role_action: "01env" }
+      - {role: k8s, role_action: "02certs" }
+      - {role: k8s, role_action: "03kubectl" }
+      - {role: k8s, role_action: "04etcd" }
+      - {role: k8s, role_action: "05flannel" }
+      - {role: k8s, role_action: "06nginx" }
+      - {role: k8s, role_action: "06.1master" }
+      - {role: k8s, role_action: "06.2apiserver" }
+      - {role: k8s, role_action: "06.3controller-manager" }
+      - {role: k8s, role_action: "06.4scheduler" }
+      - {role: k8s, role_action: "07.1docker" }
+      - {role: k8s, role_action: "07.2kubelet" }
+      - {role: k8s, role_action: "07.3kube-proxy" }
       - {role: k8s, role_action: "09.1coredns" }
