@@ -51,3 +51,5 @@
   args:
     creates: "{{K8S_DIR}}/csr-crb-applied"
 
+# approve csr kubectl get csr | grep Pending | awk '{print $1}' | xargs kubectl  certificate approve
+# kubectl create clusterrolebinding kube-apiserver:kubelet-apis --clusterrole=system:kubelet-api-admin --user kubernetes

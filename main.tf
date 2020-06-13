@@ -99,7 +99,7 @@ resource "azurerm_virtual_machine" "k8s" {
   #Auto_Shutdown = "no"
 }
 
-resource "null_resource" "abcec" {
+resource "null_resource" "bcec" {
   triggers = {
     cluster_instance_ids = join(",", azurerm_virtual_machine.k8s.*.id)
   }
@@ -194,7 +194,7 @@ resource "azurerm_virtual_machine" "bastion" {
 
   tags = {
     environment = "staging"
+    Auto_Shutdown = "no"
   }
-  #Auto_Shutdown = "no"
 }
 
